@@ -31,11 +31,11 @@
 ```bash
 pip install "psycopg[binary]" pymongo redis matplotlib
 
-python -m lab.load --scale S      # заповнити БД: 2 000 курсів (L — 20 000)
-python -m lab.verify              # перевірити, що дані однакові
-python -m lab.bench --scale S     # тести швидкості
-python -m lab.charts              # графіки (потрібні результати S і L)
-python -m lab.redis_demo          # команди Redis
+python -m lab.load --scale S     
+python -m lab.verify              
+python -m lab.bench --scale S     
+python -m lab.charts              
+python -m lab.redis_demo         
 mongosh mongodb://localhost:27017/lms mongo/queries.js
 ```
 
