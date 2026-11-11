@@ -1,0 +1,390 @@
+
+===== PostgreSQL: R1 flat JOIN =====
+Incremental Sort (actual time=0.437..0.779 rows=136 loops=1)
+  Sort Key: tp.orderno, m.orderno, qq.orderno, qo.orderno, r.orderno
+  Presorted Key: tp.orderno
+  Full-sort Groups: 3  Sort Method: quicksort  Average Memory: 56kB  Peak Memory: 56kB
+  Pre-sorted Groups: 2  Sort Method: quicksort  Average Memory: 36kB  Peak Memory: 46kB
+  Buffers: shared hit=1011 read=8
+  ->  Nested Loop Left Join (actual time=0.153..0.657 rows=136 loops=1)
+        Buffers: shared hit=1011 read=8
+        ->  Nested Loop Left Join (actual time=0.128..0.351 rows=55 loops=1)
+              Buffers: shared hit=490 read=6
+              ->  Nested Loop Left Join (actual time=0.127..0.311 rows=30 loops=1)
+                    Buffers: shared hit=474 read=5
+                    ->  Nested Loop Left Join (actual time=0.126..0.300 rows=30 loops=1)
+                          Buffers: shared hit=474 read=5
+                          ->  Nested Loop Left Join (actual time=0.121..0.275 rows=30 loops=1)
+                                Buffers: shared hit=414 read=5
+                                ->  Nested Loop Left Join (actual time=0.116..0.246 rows=30 loops=1)
+                                      Buffers: shared hit=350 read=5
+                                      ->  Nested Loop Left Join (actual time=0.109..0.220 rows=30 loops=1)
+                                            Buffers: shared hit=287 read=5
+                                            ->  Nested Loop Left Join (actual time=0.105..0.191 rows=30 loops=1)
+                                                  Buffers: shared hit=219 read=5
+                                                  ->  Nested Loop Left Join (actual time=0.099..0.158 rows=30 loops=1)
+                                                        Buffers: shared hit=118 read=5
+                                                        ->  Nested Loop (actual time=0.093..0.117 rows=30 loops=1)
+                                                              Buffers: shared hit=25 read=4
+                                                              ->  Index Scan using idx_topics_syllabus_order on topics tp (actual time=0.037..0.039 rows=6 loops=1)
+                                                                    Index Cond: (syllabusid = '15404'::smallint)
+                                                                    Buffers: shared hit=1 read=3
+                                                              ->  Index Scan using idx_materials_topic on materials m (actual time=0.002..0.004 rows=5 loops=6)
+                                                                    Index Cond: (topicid = tp.id)
+                                                                    Buffers: shared hit=24 read=1
+                                                        ->  Index Scan using materiallectures_pkey on materiallectures ml (actual time=0.001..0.001 rows=0 loops=30)
+                                                              Index Cond: (materialid = m.id)
+                                                              Buffers: shared hit=93 read=1
+                                                  ->  Index Scan using materialvideos_pkey on materialvideos mv (actual time=0.001..0.001 rows=0 loops=30)
+                                                        Index Cond: (materialid = m.id)
+                                                        Buffers: shared hit=101
+                                            ->  Index Scan using materialfiles_pkey on materialfiles mf (actual time=0.001..0.001 rows=0 loops=30)
+                                                  Index Cond: (materialid = m.id)
+                                                  Buffers: shared hit=68
+                                      ->  Index Scan using materiallinks_pkey on materiallinks mk (actual time=0.001..0.001 rows=0 loops=30)
+                                            Index Cond: (materialid = m.id)
+                                            Buffers: shared hit=63
+                                ->  Index Scan using quizzes_pkey on quizzes qz (actual time=0.001..0.001 rows=0 loops=30)
+                                      Index Cond: (materialid = m.id)
+                                      Buffers: shared hit=64
+                          ->  Index Scan using assignments_pkey on assignments a (actual time=0.001..0.001 rows=0 loops=30)
+                                Index Cond: (materialid = m.id)
+                                Buffers: shared hit=60
+                    ->  Index Scan using idx_rubric_assignment on assignmentrubric r (actual time=0.000..0.000 rows=0 loops=30)
+                          Index Cond: (assignmentid = a.materialid)
+              ->  Index Scan using idx_questions_quiz on quizquestions qq (actual time=0.000..0.001 rows=1 loops=30)
+                    Index Cond: (quizid = qz.materialid)
+                    Buffers: shared hit=16 read=1
+        ->  Index Scan using idx_options_question on quizoptions qo (actual time=0.001..0.001 rows=2 loops=55)
+              Index Cond: (questionid = qq.id)
+              Buffers: shared hit=112 read=2
+        SubPlan 1
+          ->  Aggregate (actual time=0.001..0.001 rows=1 loops=136)
+                Buffers: shared hit=409
+                ->  Index Only Scan using materialtags_pkey on materialtags mt (actual time=0.001..0.001 rows=2 loops=136)
+                      Index Cond: (materialid = m.id)
+                      Heap Fetches: 0
+                      Buffers: shared hit=409
+Planning:
+  Buffers: shared hit=1314
+Planning Time: 6.270 ms
+Execution Time: 0.857 ms
+
+===== PostgreSQL: R1 json_agg =====
+Nested Loop (actual time=1.556..1.563 rows=1 loops=1)
+  Join Filter: (s.semesterid = sem.id)
+  Rows Removed by Join Filter: 7
+  Buffers: shared hit=370
+  ->  Nested Loop (actual time=0.022..0.025 rows=1 loops=1)
+        Buffers: shared hit=14
+        ->  Nested Loop (actual time=0.020..0.023 rows=1 loops=1)
+              Buffers: shared hit=12
+              ->  Nested Loop (actual time=0.016..0.018 rows=1 loops=1)
+                    Buffers: shared hit=9
+                    ->  Nested Loop (actual time=0.013..0.015 rows=1 loops=1)
+                          Buffers: shared hit=6
+                          ->  Index Scan using syllabuses_pkey on syllabuses s (actual time=0.008..0.010 rows=1 loops=1)
+                                Index Cond: (id = '15404'::smallint)
+                                Buffers: shared hit=3
+                          ->  Index Scan using disciplines_pkey on disciplines d (actual time=0.004..0.004 rows=1 loops=1)
+                                Index Cond: (id = s.disciplineid)
+                                Buffers: shared hit=3
+                    ->  Index Scan using teachers_pkey on teachers t (actual time=0.002..0.002 rows=1 loops=1)
+                          Index Cond: (id = s.teacherid)
+                          Buffers: shared hit=3
+              ->  Index Scan using users_pkey on users u (actual time=0.004..0.004 rows=1 loops=1)
+                    Index Cond: (id = t.userid)
+                    Buffers: shared hit=3
+        ->  Index Scan using departments_pkey on departments dep (actual time=0.002..0.002 rows=1 loops=1)
+              Index Cond: (id = t.departmentid)
+              Buffers: shared hit=2
+  ->  Seq Scan on semesters sem (actual time=0.003..0.003 rows=8 loops=1)
+        Buffers: shared hit=1
+  SubPlan 12
+    ->  Aggregate (actual time=1.421..1.424 rows=1 loops=1)
+          Buffers: shared hit=355
+          ->  Sort (actual time=0.014..0.015 rows=6 loops=1)
+                Sort Key: tp.orderno
+                Sort Method: quicksort  Memory: 25kB
+                Buffers: shared hit=3
+                ->  Index Scan using idx_topics_syllabus on topics tp (actual time=0.009..0.010 rows=6 loops=1)
+                      Index Cond: (syllabusid = s.id)
+                      Buffers: shared hit=3
+          SubPlan 11
+            ->  Aggregate (actual time=0.190..0.191 rows=1 loops=6)
+                  Buffers: shared hit=352
+                  ->  Index Scan using idx_materials_topic on materials m (actual time=0.002..0.003 rows=5 loops=6)
+                        Index Cond: (topicid = tp.id)
+                        Buffers: shared hit=25
+                  SubPlan 1
+                    ->  Aggregate (actual time=0.002..0.002 rows=1 loops=30)
+                          Buffers: shared hit=91
+                          ->  Index Only Scan using materialtags_pkey on materialtags mt (actual time=0.001..0.001 rows=1 loops=30)
+                                Index Cond: (materialid = m.id)
+                                Heap Fetches: 0
+                                Buffers: shared hit=91
+                  SubPlan 2
+                    ->  Index Scan using materiallectures_pkey on materiallectures x (actual time=0.006..0.006 rows=1 loops=4)
+                          Index Cond: (materialid = m.id)
+                          Buffers: shared hit=16
+                  SubPlan 3
+                    ->  Index Scan using materialvideos_pkey on materialvideos x_1 (actual time=0.002..0.002 rows=1 loops=11)
+                          Index Cond: (materialid = m.id)
+                          Buffers: shared hit=44
+                  SubPlan 4
+                    ->  Index Scan using materialfiles_pkey on materialfiles x_2 (actual time=0.002..0.003 rows=1 loops=8)
+                          Index Cond: (materialid = m.id)
+                          Buffers: shared hit=24
+                  SubPlan 5
+                    ->  Index Scan using materiallinks_pkey on materiallinks x_3 (actual time=0.003..0.003 rows=1 loops=3)
+                          Index Cond: (materialid = m.id)
+                          Buffers: shared hit=9
+                  SubPlan 8
+                    ->  Index Scan using quizzes_pkey on quizzes z (actual time=0.154..0.155 rows=1 loops=4)
+                          Index Cond: (materialid = m.id)
+                          Buffers: shared hit=143
+                          SubPlan 7
+                            ->  Aggregate (actual time=0.139..0.139 rows=1 loops=4)
+                                  Buffers: shared hit=131
+                                  ->  Index Scan using idx_questions_quiz on quizquestions q (actual time=0.002..0.003 rows=7 loops=4)
+                                        Index Cond: (quizid = z.materialid)
+                                        Buffers: shared hit=17
+                                  SubPlan 6
+                                    ->  Aggregate (actual time=0.010..0.010 rows=1 loops=29)
+                                          Buffers: shared hit=114
+                                          ->  Index Scan using idx_options_question on quizoptions o (actual time=0.002..0.003 rows=4 loops=29)
+                                                Index Cond: (questionid = q.id)
+                                                Buffers: shared hit=114
+                  SubPlan 10
+                    ->  Index Scan using assignments_pkey on assignments a (never executed)
+                          Index Cond: (materialid = m.id)
+                          SubPlan 9
+                            ->  Aggregate (never executed)
+                                  ->  Index Scan using idx_rubric_assignment on assignmentrubric r (never executed)
+                                        Index Cond: (assignmentid = a.materialid)
+Planning:
+  Buffers: shared hit=62
+Planning Time: 0.717 ms
+Execution Time: 1.643 ms
+
+===== PostgreSQL: R1 JSONB =====
+Index Scan using coursedocs_pkey on coursedocs (actual time=0.124..0.125 rows=1 loops=1)
+  Index Cond: (syllabusid = '15404'::smallint)
+  Buffers: shared hit=1 read=2
+Planning:
+  Buffers: shared hit=8
+Planning Time: 0.086 ms
+Execution Time: 0.134 ms
+
+===== PostgreSQL: A1 tag t020 =====
+Gather (actual time=2.216..166.528 rows=8340 loops=1)
+  Workers Planned: 2
+  Workers Launched: 2
+  Buffers: shared hit=87466 read=9271 written=90
+  ->  Hash Join (actual time=1.371..138.749 rows=2780 loops=3)
+        Hash Cond: (s.disciplineid = d.id)
+        Buffers: shared hit=87466 read=9271 written=90
+        ->  Nested Loop (actual time=0.936..136.853 rows=2780 loops=3)
+              Buffers: shared hit=87318 read=9271 written=90
+              ->  Nested Loop (actual time=0.917..120.049 rows=2780 loops=3)
+                    Buffers: shared hit=62373 read=9194 written=87
+                    ->  Nested Loop (actual time=0.891..101.743 rows=2780 loops=3)
+                          Buffers: shared hit=29550 read=8655 written=81
+                          ->  Parallel Bitmap Heap Scan on materialtags mt (actual time=0.844..51.654 rows=2780 loops=3)
+                                Recheck Cond: ((tag)::text = 't020'::text)
+                                Heap Blocks: exact=1921
+                                Buffers: shared hit=51 read=4792 written=46
+                                ->  Bitmap Index Scan on idx_materialtags_tag (actual time=1.001..1.001 rows=8844 loops=1)
+                                      Index Cond: ((tag)::text = 't020'::text)
+                                      Buffers: shared read=11
+                          ->  Index Scan using materials_pkey on materials m (actual time=0.018..0.018 rows=1 loops=8340)
+                                Index Cond: (id = mt.materialid)
+                                Buffers: shared hit=29499 read=3863 written=35
+                    ->  Index Scan using topics_pkey on topics tp (actual time=0.006..0.006 rows=1 loops=8340)
+                          Index Cond: (id = m.topicid)
+                          Buffers: shared hit=32823 read=539 written=6
+              ->  Index Scan using syllabuses_pkey on syllabuses s (actual time=0.006..0.006 rows=1 loops=8340)
+                    Index Cond: (id = tp.syllabusid)
+                    Buffers: shared hit=24945 read=77 written=3
+        ->  Hash (actual time=0.373..0.374 rows=1500 loops=3)
+              Buckets: 2048  Batches: 1  Memory Usage: 137kB
+              Buffers: shared hit=54
+              ->  Seq Scan on disciplines d (actual time=0.020..0.184 rows=1500 loops=3)
+                    Buffers: shared hit=54
+Planning:
+  Buffers: shared hit=231 read=126 dirtied=46
+Planning Time: 6.320 ms
+Execution Time: 166.967 ms
+
+===== PostgreSQL: A2 dept stats (semester 10) =====
+GroupAggregate (actual time=321.326..411.777 rows=20 loops=1)
+  Group Key: t.departmentid
+  Buffers: shared hit=119932 read=738 dirtied=10
+  ->  Gather Merge (actual time=317.190..340.588 rows=89276 loops=1)
+        Workers Planned: 1
+        Workers Launched: 1
+        Buffers: shared hit=78408 read=622
+        ->  Sort (actual time=289.392..294.196 rows=44638 loops=2)
+              Sort Key: t.departmentid, s.id
+              Sort Method: quicksort  Memory: 941kB
+              Buffers: shared hit=78408 read=622
+              Worker 0:  Sort Method: quicksort  Memory: 6701kB
+              ->  Parallel Hash Right Join (actual time=235.903..274.750 rows=44638 loops=2)
+                    Hash Cond: (v.materialid = mt.id)
+                    Buffers: shared hit=78401 read=622
+                    ->  Parallel Seq Scan on materialvideos v (actual time=0.007..8.921 rows=112598 loops=2)
+                          Buffers: shared hit=2093 read=133
+                    ->  Parallel Hash (actual time=235.313..235.330 rows=44638 loops=2)
+                          Buckets: 131072  Batches: 1  Memory Usage: 5952kB
+                          Buffers: shared hit=76279 read=489
+                          ->  Nested Loop (actual time=173.947..223.862 rows=44638 loops=2)
+                                Buffers: shared hit=76279 read=489
+                                ->  Hash Join (actual time=173.914..196.976 rows=8940 loops=2)
+                                      Hash Cond: (s.teacherid = t.id)
+                                      Buffers: shared hit=3921 read=173
+                                      ->  Parallel Hash Join (actual time=3.196..25.021 rows=8940 loops=2)
+                                            Hash Cond: (tp.syllabusid = s.id)
+                                            Buffers: shared hit=3911 read=173
+                                            ->  Parallel Seq Scan on topics tp (actual time=0.015..14.809 rows=89875 loops=2)
+                                                  Buffers: shared hit=3085 read=156
+                                            ->  Parallel Hash (actual time=3.137..3.139 rows=993 loops=2)
+                                                  Buckets: 2048  Batches: 1  Memory Usage: 112kB
+                                                  Buffers: shared hit=826 read=17
+                                                  ->  Parallel Bitmap Heap Scan on syllabuses s (actual time=0.464..5.999 rows=1986 loops=1)
+                                                        Recheck Cond: (semesterid = '10'::smallint)
+                                                        Buffers: shared hit=826 read=17
+                                                        ->  Bitmap Index Scan on idx_syllabuses_semester (actual time=0.361..0.362 rows=2111 loops=1)
+                                                              Index Cond: (semesterid = '10'::smallint)
+                                                              Buffers: shared hit=4 read=5
+                                      ->  Hash (actual time=170.704..170.705 rows=600 loops=2)
+                                            Buckets: 1024  Batches: 1  Memory Usage: 32kB
+                                            Buffers: shared hit=10
+                                            ->  Seq Scan on teachers t (actual time=170.561..170.617 rows=600 loops=2)
+                                                  Buffers: shared hit=10
+                                ->  Index Scan using idx_materials_topic on materials mt (actual time=0.002..0.002 rows=5 loops=17879)
+                                      Index Cond: (topicid = tp.id)
+                                      Buffers: shared hit=72358 read=316
+  SubPlan 1
+    ->  Aggregate (actual time=0.001..0.001 rows=1 loops=89276)
+          Buffers: shared hit=41524 read=116 dirtied=10
+          ->  Result (actual time=0.000..0.000 rows=1 loops=89276)
+                One-Time Filter: ((mt.type)::text = 'quiz'::text)
+                Buffers: shared hit=41524 read=116 dirtied=10
+                ->  Index Only Scan using idx_questions_quiz on quizquestions q (actual time=0.001..0.002 rows=7 loops=13480)
+                      Index Cond: (quizid = mt.id)
+                      Heap Fetches: 5521
+                      Buffers: shared hit=41524 read=116 dirtied=10
+Planning:
+  Buffers: shared hit=258 read=2
+Planning Time: 1.127 ms
+Execution Time: 414.049 ms
+
+===== PostgreSQL: A3 hardest questions =====
+Limit (actual time=579.046..579.051 rows=20 loops=1)
+  Buffers: shared hit=1804 read=21887
+  ->  Sort (actual time=579.044..579.046 rows=20 loops=1)
+        Sort Key: (count(*))
+        Sort Method: top-N heapsort  Memory: 25kB
+        Buffers: shared hit=1804 read=21887
+        ->  HashAggregate (actual time=530.989..565.351 rows=187232 loops=1)
+              Group Key: questionid
+              Filter: (count(*) >= 10)
+              Batches: 1  Memory Usage: 18449kB
+              Buffers: shared hit=1801 read=21887
+              ->  Seq Scan on attemptanswers (actual time=0.256..228.238 rows=2808480 loops=1)
+                    Buffers: shared hit=1801 read=21887
+Planning:
+  Buffers: shared hit=11
+Planning Time: 0.113 ms
+Execution Time: 579.730 ms
+
+===== MongoDB: R1 find by _id =====
+{
+ "executionTimeMillis": 0,
+ "totalKeysExamined": 1,
+ "totalDocsExamined": 1,
+ "nReturned": 1,
+ "winningPlan": {
+  "isCached": false,
+  "stage": "EXPRESS_IXSCAN",
+  "keyPattern": "{ _id: 1 }",
+  "indexName": "_id_"
+ }
+}
+
+===== MongoDB: R3 find by material id (multikey) =====
+{
+ "executionTimeMillis": 0,
+ "totalKeysExamined": 1,
+ "totalDocsExamined": 1,
+ "nReturned": 1,
+ "winningPlan": {
+  "isCached": false,
+  "stage": "FETCH",
+  "nss": "lms.course_content",
+  "inputStage": {
+   "stage": "IXSCAN",
+   "nss": "lms.course_content",
+   "keyPattern": {
+    "modules.materials.materialId": 1
+   },
+   "indexName": "modules.materials.materialId_1",
+   "isMultiKey": true,
+   "multiKeyPaths": {
+    "modules.materials.materialId": [
+     "modules",
+     "modules.materials"
+    ]
+   },
+   "isUnique": false,
+   "isSparse": false,
+   "isPartial": false,
+   "indexVersion": 2,
+   "direction": "forward",
+   "indexBounds": {
+    "modules.materials.materialId": [
+     "[12345, 12345]"
+    ]
+   }
+  }
+ }
+}
+
+===== MongoDB: A1 tag t020 =====
+{
+ "executionTimeMillis": null,
+ "totalKeysExamined": null,
+ "totalDocsExamined": null,
+ "nReturned": null,
+ "winningPlan": {
+  "isCached": false,
+  "stage": "FETCH",
+  "nss": "lms.course_content",
+  "inputStage": {
+   "stage": "IXSCAN",
+   "nss": "lms.course_content",
+   "keyPattern": {
+    "modules.materials.tags": 1
+   },
+   "indexName": "modules.materials.tags_1",
+   "isMultiKey": true,
+   "multiKeyPaths": {
+    "modules.materials.tags": [
+     "modules",
+     "modules.materials",
+     "modules.materials.tags"
+    ]
+   },
+   "isUnique": false,
+   "isSparse": false,
+   "isPartial": false,
+   "indexVersion": 2,
+   "direction": "forward",
+   "indexBounds": {
+    "modules.materials.tags": [
+     "[\"t020\", \"t020\"]"
+    ]
+   }
+  }
+ }
+}

@@ -1,0 +1,76 @@
+MongoDB: collections and indexes created
+  500/20000 courses, 9570 attempts
+  1000/20000 courses, 18855 attempts
+  1500/20000 courses, 30060 attempts
+  2000/20000 courses, 39510 attempts
+  2500/20000 courses, 48780 attempts
+  3000/20000 courses, 58935 attempts
+  3500/20000 courses, 68820 attempts
+  4000/20000 courses, 78075 attempts
+  4500/20000 courses, 88080 attempts
+  5000/20000 courses, 96765 attempts
+  5500/20000 courses, 105195 attempts
+  6000/20000 courses, 116475 attempts
+  6500/20000 courses, 127785 attempts
+  7000/20000 courses, 141030 attempts
+  7500/20000 courses, 151980 attempts
+  8000/20000 courses, 161655 attempts
+  8500/20000 courses, 171555 attempts
+  9000/20000 courses, 180855 attempts
+  9500/20000 courses, 189420 attempts
+  10000/20000 courses, 199770 attempts
+  10500/20000 courses, 210405 attempts
+  11000/20000 courses, 219315 attempts
+  11500/20000 courses, 229485 attempts
+  12000/20000 courses, 241095 attempts
+  12500/20000 courses, 252825 attempts
+  13000/20000 courses, 262920 attempts
+  13500/20000 courses, 273150 attempts
+  14000/20000 courses, 284520 attempts
+  14500/20000 courses, 294765 attempts
+  15000/20000 courses, 304050 attempts
+  15500/20000 courses, 314880 attempts
+  16000/20000 courses, 326325 attempts
+  16500/20000 courses, 335010 attempts
+  17000/20000 courses, 343830 attempts
+  17500/20000 courses, 355095 attempts
+  18000/20000 courses, 365325 attempts
+  18500/20000 courses, 374790 attempts
+  19000/20000 courses, 383925 attempts
+  19500/20000 courses, 392580 attempts
+  20000/20000 courses, 401685 attempts
+MongoDB: indexes created
+{
+  "scale": "L",
+  "cfg": {
+    "departments": 20,
+    "teachers": 600,
+    "groups": 300,
+    "students": 9000,
+    "disciplines": 1500,
+    "syllabuses": 20000,
+    "attempts_per_quiz": 15
+  },
+  "load_seconds": {
+    "pg_norm": 46.20896410599926,
+    "pg_jsonb": 31.016368369997963,
+    "mongo": 13.767167894000522,
+    "pg_attempts": 52.64019819300165,
+    "mongo_attempts": 7.3169709889984915,
+    "pg_indexes": 42.22258186199997,
+    "mongo_indexes": 8.132105040999704
+  },
+  "counts": {
+    "courses": 20000,
+    "attempts": 401685
+  },
+  "ids": {
+    "topic": 179750,
+    "material": 898905,
+    "question": 946177,
+    "option": 3406308,
+    "rubric": 315090,
+    "attempt": 401685,
+    "answer": 2808480
+  }
+}

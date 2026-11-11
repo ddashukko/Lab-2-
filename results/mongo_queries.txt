@@ -1,0 +1,217 @@
+
+--- курс 42 — кількість модулів / матеріалів
+{
+  modules: 6,
+  materials: 27
+}
+
+--- зміст курсу (перший модуль)
+{
+  title: 'Ймовірність лекція процедура',
+  materials: [
+    {
+      type: 'link',
+      title: 'Кафедра курс ймовірність база граф протокол'
+    },
+    {
+      type: 'lecture',
+      title: 'Схема кафедра колекція база'
+    },
+    {
+      type: 'quiz',
+      title: "Запит структура об'єкт"
+    },
+    {
+      type: 'lecture',
+      title: 'Запит безпека'
+    },
+    {
+      type: 'file',
+      title: 'Безпека шардинг'
+    },
+    {
+      type: 'link',
+      title: 'Ключ структура пошук продуктивність модель'
+    },
+    {
+      type: 'lecture',
+      title: 'Архітектура структура ймовірність кеш'
+    }
+  ]
+}
+
+--- тест 1784
+[
+  {
+    title: "Запит структура об'єкт",
+    timeLimitMin: 10,
+    questionsCount: 9
+  }
+]
+
+--- updateOne з arrayFilters
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+--- $push нового матеріалу у перший модуль
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+--- $pull — видалити його
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+--- Валідація $jsonSchema відхилила документ
+$jsonSchema
+
+--- кількість матеріалів з тегом t020
+[
+  {
+    materials: 8340
+  }
+]
+
+--- статистика по кафедрах (семестр 10), перші 3
+[
+  {
+    _id: 'K01',
+    materials: 4327,
+    courses: 96,
+    videoHours: 878.1
+  },
+  {
+    _id: 'K02',
+    materials: 2933,
+    courses: 65,
+    videoHours: 590.2
+  },
+  {
+    _id: 'K03',
+    materials: 6229,
+    courses: 141,
+    videoHours: 1156.7
+  }
+]
+
+--- 3 останні спроби студента 15
+[
+  {
+    _id: 326184,
+    studentId: 15,
+    quizId: 719178,
+    syllabusId: 15991,
+    quizTitle: 'Функція пошук студент сортування кафедра матриця',
+    startedAt: ISODate('2025-12-25T04:42:15.000Z'),
+    finishedAt: ISODate('2025-12-25T04:49:51.000Z'),
+    score: 1,
+    maxScore: 31
+  },
+  {
+    _id: 120283,
+    studentId: 15,
+    quizId: 275652,
+    syllabusId: 6138,
+    quizTitle: 'Інтерфейс тестування нормалізація клієнт матриця клас',
+    startedAt: ISODate('2025-12-24T15:45:37.000Z'),
+    finishedAt: ISODate('2025-12-24T15:50:08.000Z'),
+    score: 14,
+    maxScore: 14
+  },
+  {
+    _id: 224730,
+    studentId: 15,
+    quizId: 505876,
+    syllabusId: 11253,
+    quizTitle: 'Нормалізація курс практика архітектура',
+    startedAt: ISODate('2025-12-23T22:47:03.000Z'),
+    finishedAt: ISODate('2025-12-23T23:36:37.000Z'),
+    score: 17,
+    maxScore: 17
+  }
+]
+
+--- аналіз питань тесту 228
+[
+  {
+    _id: 239,
+    n: 15,
+    correctRate: 0.6
+  },
+  {
+    _id: 240,
+    n: 15,
+    correctRate: 0.6666666666666666
+  },
+  {
+    _id: 241,
+    n: 15,
+    correctRate: 0.6666666666666666
+  },
+  {
+    _id: 242,
+    n: 15,
+    correctRate: 0.5333333333333333
+  },
+  {
+    _id: 243,
+    n: 15,
+    correctRate: 0.6666666666666666
+  },
+  {
+    _id: 244,
+    n: 15,
+    correctRate: 0.5333333333333333
+  },
+  {
+    _id: 245,
+    n: 15,
+    correctRate: 0.6
+  },
+  {
+    _id: 246,
+    n: 15,
+    correctRate: 0.4
+  },
+  {
+    _id: 247,
+    n: 15,
+    correctRate: 0.5333333333333333
+  },
+  {
+    _id: 248,
+    n: 15,
+    correctRate: 0.5333333333333333
+  }
+]
+
+--- Індекси course_content
+[
+  '_id_',
+  'departmentId_1_semesterId_1',
+  'teacherId_1',
+  'modules.materials.tags_1',
+  'modules.materials.materialId_1'
+]
+
+--- explain: пошук за тегом t250
+{
+  stage: 'IXSCAN',
+  keysExamined: 527,
+  docsExamined: 527,
+  timeMs: 24
+}

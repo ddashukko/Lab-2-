@@ -1,0 +1,33 @@
+{
+  "scale": "S",
+  "cfg": {
+    "departments": 10,
+    "teachers": 150,
+    "groups": 60,
+    "students": 1500,
+    "disciplines": 300,
+    "syllabuses": 2000,
+    "attempts_per_quiz": 15
+  },
+  "load_seconds": {
+    "pg": 5.3535544450001,
+    "mongo": 1.53995207700018,
+    "pg_attempts": 6.6677911739999445,
+    "mongo_attempts": 0.8999951890000375,
+    "pg_indexes": 1.8590758779999987,
+    "mongo_indexes": 1.6305058860000372
+  },
+  "counts": {
+    "courses": 2000,
+    "attempts": 41715
+  },
+  "ids": {
+    "topic": 18077,
+    "material": 90571,
+    "question": 96106,
+    "option": 345480,
+    "rubric": 31413,
+    "attempt": 41715,
+    "answer": 290835
+  }
+}

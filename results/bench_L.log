@@ -1,0 +1,148 @@
+
+R1_full_course: Повний курс за id (усе дерево: модулі, матеріали, тести, рубрики)
+   MongoDB findOne(_id)             p50=    0.499 ms  p95=    0.891  mean=    0.540  n=1200
+   PG JSONB (1 рядок)               p50=    0.861 ms  p95=    1.445  mean=    0.919  n=1200
+   PG норм.: json_agg на сервері    p50=    3.437 ms  p95=    6.182  mean=    3.632  n=1200
+   PG норм.: 1 JOIN-запит (flat)    p50=    2.220 ms  p95=    3.796  mean=    2.343  n=1200
+   PG норм.: 6 запитів (split)      p50=    1.562 ms  p95=    2.411  mean=    1.640  n=1200
+
+R2_outline: Лише зміст курсу (назви модулів і матеріалів)
+   MongoDB findOne + projection     p50=    0.217 ms  p95=    0.405  mean=    0.242  n=1200
+   PG норм.: Topics JOIN Materials  p50=    0.228 ms  p95=    0.326  mean=    0.239  n=1200
+
+R3_single_quiz: Один тест (матеріал) за його id для проходження
+   MongoDB: find курсу + вибір на клієнті p50=    0.566 ms  p95=    0.836  mean=    0.588  n=1200
+   MongoDB: aggregate $unwind       p50=    0.560 ms  p95=    0.818  mean=    0.599  n=1200
+   PG норм.: 3 таблиці за PK/FK     p50=    0.246 ms  p95=    0.418  mean=    0.275  n=1200
+
+R4_attempt_view: Перегляд однієї спроби з усіма відповідями
+   MongoDB findOne(_id)             p50=    0.152 ms  p95=    0.359  mean=    0.189  n=1200
+   PG норм.: 3 таблиці + GROUP BY   p50=    0.191 ms  p95=    0.441  mean=    0.261  n=1200
+
+A4_student_history: Останні 20 спроб студента (без відповідей)
+   MongoDB find+sort+limit          p50=    0.444 ms  p95=    0.843  mean=    0.506  n=1200
+   PG норм.: JOIN + ORDER BY LIMIT  p50=    0.256 ms  p95=    0.646  mean=    0.312  n=1200
+
+A1_tag_t250: Пошук матеріалів з тегом t250 по всіх курсах
+   MongoDB aggregate (multikey idx) p50=   33.759 ms  p95=   37.793  mean=   33.921  n=90
+   PG норм.: 5 JOIN + B-tree        p50=    4.205 ms  p95=    5.327  mean=    4.227  n=90
+   PG JSONB: jsonpath + GIN         p50=  141.042 ms  p95=  162.349  mean=  143.577  n=90
+
+A1_tag_t020: Пошук матеріалів з тегом t020 по всіх курсах
+   MongoDB aggregate (multikey idx) p50=  450.649 ms  p95=  545.594  mean=  459.868  n=30
+   PG норм.: 5 JOIN + B-tree        p50=   52.785 ms  p95=   60.789  mean=   53.320  n=30
+   PG JSONB: jsonpath + GIN         p50= 1922.748 ms  p95= 2012.686  mean= 1934.681  n=30
+
+A1_tag_t000: Пошук матеріалів з тегом t000 по всіх курсах
+   MongoDB aggregate (multikey idx) p50= 2218.978 ms  p95= 2410.899  mean= 2219.416  n=12
+   PG норм.: 5 JOIN + B-tree        p50=  648.228 ms  p95=  710.603  mean=  652.489  n=12
+   PG JSONB: jsonpath + GIN         p50=20494.931 ms  p95=21050.668  mean=20571.250  n=12
+
+A2_dept_stats_semester: Статистика контенту по кафедрах за 1 семестр (~10% курсів)
+   MongoDB aggregate                p50=  750.034 ms  p95=  860.943  mean=  751.249  n=30
+   PG норм.: GROUP BY               p50=  331.289 ms  p95=  353.606  mean=  329.808  n=30
+
+A2_dept_stats_all: Статистика контенту по кафедрах за всі семестри (повне сканування)
+   MongoDB aggregate                p50= 1810.278 ms  p95= 1908.266  mean= 1809.406  n=12
+   PG норм.: GROUP BY               p50= 1090.944 ms  p95= 1127.138  mean= 1076.028  n=12
+
+A3_item_analysis: Аналіз питань одного тесту (частка правильних відповідей)
+   MongoDB aggregate $unwind        p50=    0.488 ms  p95=    0.688  mean=    0.510  n=900
+   PG норм.: JOIN + GROUP BY        p50=    0.123 ms  p95=    0.266  mean=    0.149  n=900
+
+A3_hardest_questions: Топ-20 найскладніших питань по всіх спробах (повне сканування)
+   MongoDB aggregate $unwind        p50= 1690.179 ms  p95= 1828.359  mean= 1704.014  n=12
+   PG норм.: GROUP BY               p50=  307.843 ms  p95=  386.498  mean=  323.333  n=12
+
+W1_create_course: Створення курсу цілком (insertOne / INSERT / транзакція INSERT у 12 таблиць); надійний запис (j:true / synchronous_commit=on)
+   MongoDB                                  p50=    1.667 ms  p95=    2.437  n=300
+   PG JSONB                                 p50=    2.827 ms  p95=    4.105  n=300
+   PG норм. (12 таблиць)                    p50=    7.914 ms  p95=   13.214  n=300
+
+W3_replace_course: Збереження курсу з редактора, повна заміна (replaceOne / UPDATE doc / DELETE каскад + INSERT); надійний запис (j:true / synchronous_commit=on)
+   MongoDB                                  p50=    1.952 ms  p95=    2.761  n=300
+   PG JSONB                                 p50=    2.805 ms  p95=    4.248  n=300
+   PG норм. (12 таблиць)                    p50=   11.030 ms  p95=   17.105  n=300
+
+W1_create_course_relaxed: Створення курсу цілком (insertOne / INSERT / транзакція INSERT у 12 таблиць); послаблена надійність (j:false / synchronous_commit=off)
+   MongoDB [relaxed]                        p50=    1.221 ms  p95=    1.878  n=300
+   PG JSONB [relaxed]                       p50=    2.493 ms  p95=    3.675  n=300
+   PG норм. (12 таблиць) [relaxed]          p50=    7.483 ms  p95=   10.676  n=300
+
+W3_replace_course_relaxed: Збереження курсу з редактора, повна заміна (replaceOne / UPDATE doc / DELETE каскад + INSERT); послаблена надійність (j:false / synchronous_commit=off)
+   MongoDB [relaxed]                        p50=    1.584 ms  p95=    2.218  n=300
+   PG JSONB [relaxed]                       p50=    2.441 ms  p95=    4.133  n=300
+   PG норм. (12 таблиць) [relaxed]          p50=   10.132 ms  p95=   15.269  n=300
+
+W2_update_question: Змінити бали одного питання (+версія курсу)
+   MongoDB updateOne + arrayFilters p50=    1.185 ms  p95=    1.787  mean=    1.284  n=900
+   PG JSONB jsonb_set               p50=    2.611 ms  p95=    4.076  mean=    4.953  n=900
+   PG норм.: UPDATE за PK           p50=    0.562 ms  p95=    0.884  mean=    0.611  n=900
+
+W4_insert_attempt: Запис однієї спроби тесту з відповідями
+   MongoDB insertOne                p50=    0.442 ms  p95=    0.712  mean=    0.559  n=1500
+   PG норм.: транзакція, 3 таблиці  p50=    0.828 ms  p95=    1.263  mean=    0.887  n=1500
+
+W4_insert_attempt_relaxed: Запис однієї спроби тесту з відповідями; послаблена надійність
+   MongoDB insertOne [relaxed]      p50=    0.172 ms  p95=    0.277  mean=    0.191  n=1500
+   PG норм.: транзакція, 3 таблиці [relaxed] p50=    0.664 ms  p95=    1.059  mean=    0.733  n=1500
+
+W5_rename_teacher: Зміна ПІБ викладача (поширення денормалізованого поля)
+   MongoDB updateMany (денормалізація) p50=    1.206 ms  p95=   22.624  mean=    7.632  n=150
+   PG JSONB: UPDATE багатьох документів p50=   55.038 ms  p95=  436.722  mean=  111.593  n=150
+   PG норм.: UPDATE 1 рядка Users   p50=    0.423 ms  p95=    0.715  mean=    0.462  n=150
+
+Concurrency (read R1):
+   C[read] mongo        workers= 1    1592.2 ops/s  p50=0.59 ms p95=0.94 ms
+   C[read] mongo        workers= 2    2763.2 ops/s  p50=0.67 ms p95=1.12 ms
+   C[read] mongo        workers= 4    2109.0 ops/s  p50=1.67 ms p95=4.01 ms
+   C[read] mongo        workers= 8    2889.6 ops/s  p50=2.48 ms p95=5.50 ms
+   C[read] pg_jsonagg   workers= 1     264.0 ops/s  p50=3.63 ms p95=5.86 ms
+   C[read] pg_jsonagg   workers= 2     571.6 ops/s  p50=3.33 ms p95=5.61 ms
+   C[read] pg_jsonagg   workers= 4     589.8 ops/s  p50=6.69 ms p95=11.54 ms
+   C[read] pg_jsonagg   workers= 8     570.8 ops/s  p50=13.08 ms p95=25.04 ms
+   C[read] pg_split     workers= 1     573.0 ops/s  p50=1.62 ms p95=2.69 ms
+   C[read] pg_split     workers= 2    1221.6 ops/s  p50=1.54 ms p95=2.52 ms
+   C[read] pg_split     workers= 4    1099.2 ops/s  p50=3.42 ms p95=5.14 ms
+   C[read] pg_split     workers= 8    1034.4 ops/s  p50=7.02 ms p95=10.48 ms
+
+Concurrency (write W4):
+   C[write] mongo        workers= 1    2320.0 ops/s  p50=0.39 ms p95=0.67 ms
+   C[write] mongo        workers= 2    2422.2 ops/s  p50=0.78 ms p95=1.24 ms
+   C[write] mongo        workers= 4    2953.8 ops/s  p50=1.17 ms p95=2.06 ms
+   C[write] mongo        workers= 8    4185.0 ops/s  p50=1.75 ms p95=3.48 ms
+   C[write] pg           workers= 1    1066.6 ops/s  p50=0.87 ms p95=1.34 ms
+   C[write] pg           workers= 2    1873.8 ops/s  p50=1.00 ms p95=1.64 ms
+   C[write] pg           workers= 4    1858.0 ops/s  p50=1.99 ms p95=3.50 ms
+   C[write] pg           workers= 8    1752.2 ops/s  p50=4.34 ms p95=7.28 ms
+{
+ "pg_course_norm": {
+  "data": 1133395968,
+  "index": 330653696,
+  "tables": 12
+ },
+ "pg_course_jsonb": {
+  "data": 555294720,
+  "index": 526999552
+ },
+ "mongo_course": {
+  "data": 518590464,
+  "index": 15986688,
+  "uncompressed": 1401232071,
+  "count": 20000,
+  "avgObjSize": 70061
+ },
+ "pg_attempts": {
+  "data": 340566016,
+  "index": 261480448,
+  "tables": 3
+ },
+ "mongo_attempts": {
+  "data": 60825600,
+  "index": 15728640,
+  "uncompressed": 343330925,
+  "count": 401685,
+  "avgObjSize": 854
+ }
+}
+saved /home/claude/lab_nosql/results/bench_L.json
